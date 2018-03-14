@@ -142,9 +142,9 @@ function hardpath {
 		}
 		(( idx = idx+1 ))
 
-		if [ $idx -gt 30 ]; then
+		if [ $idx -gt $maxidx ]; then
 			echo max idx reached setting hardpath for $ProgName:$ProgVar
-			exit 2
+			break
 		fi
 	done
 
