@@ -481,3 +481,26 @@ function setCustomCmds {
 }
 
 
+runSQL () {
+
+	local dbName=$1
+	local instName=$2
+	local script=$3
+
+	. oraenv <<< $psid > /dev/null
+	export ORACLE_SID=$instName
+
+	sqlplus -s -L / as sysdba <<-EOF
+
+		@clear_for_spool
+		set term off
+		spool ${csvDir}/${dbName}.csv
+		prompt timestamp,node_1,node_2,node_3,total
+		@$script
+		exit
+EOF
+
+}
+
+
+
