@@ -1,0 +1,75 @@
+
+
+odd_or_even () {
+	local testInt=$1
+
+	if [[ -z "$testInt" ]]; then
+		echo 'unknown'
+		return 1
+	fi
+
+	if [[ ! $testInt =~ ^[[:digit:].,]+$ ]]; then
+		echo 'not a number'
+		return 1
+	fi
+
+	declare tmpInt
+
+	(( tmpInt=testInt^(testInt-1) ))
+
+	if [[ "$tmpInt" -eq 1 ]]; then
+		echo 'odd'
+	else
+		echo 'even'
+	fi
+
+	return 0
+}
+
+is_a_number () {
+	local val2chk=$1
+
+	if [[ -z "$val2chk" ]]; then
+		echo 'unknown'
+		return 1
+	fi
+
+	if [[ ! "$val2chk" =~ ^[[:digit:].,]+$ ]]; then
+		echo 'not a number'
+		return 1
+	fi
+	return 0
+}
+
+modulo () {
+	local dividend=$1
+	local divisor=$2
+
+	for testInt in $dividend $divisor
+	do
+		#echo "modulo testInt: $testInt"
+		if [[ -z "$testInt" ]]; then
+			echo 'unknown'
+			return 1
+		fi
+	done
+
+	for testInt in $dividend $divisor
+	do
+		testx=$(is_a_number $testInt)
+
+		if ( ! is_a_number $testInt ); then
+			echo 'not a number'
+			return 1
+		fi
+	done
+
+	declare moduloVal
+	# this works due to integer only numbers
+	(( moduloVal = dividend - ((dividend/divisor)*divisor) ))
+
+	echo $moduloVal
+	return 0
+
+}
+

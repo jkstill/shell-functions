@@ -333,19 +333,19 @@ function uc {
 
 # returns the passed value in lower case
 function lc {
-	typeset input=$*
+	typeset input="$@"
 	input=$(echo $input | $_TR '[A-Z]' '[a-z]')
 	echo $input
 }
 
 # returns the passed value in upper case
 function upperCase {
-	uc $*
+	uc "$@"
 }
 
 # returns the passed value in lower case
 function lowerCase {
-	lc $*
+	lc "$@"
 }
 
 
