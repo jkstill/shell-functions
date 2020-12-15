@@ -15,9 +15,21 @@ odd_or_even () {
 
 	declare tmpInt
 
+	# here is one way to do it
+: << 'COMMENT'
+
 	(( tmpInt=testInt^(testInt-1) ))
 
 	if [[ "$tmpInt" -eq 1 ]]; then
+		echo 'odd'
+	else
+		echo 'even'
+	fi
+
+COMMENT
+
+	# in Bash we can use bitwise and
+	if [[ $(( 1 & testInt )) -eq 1 ]] ; then
 		echo 'odd'
 	else
 		echo 'even'
