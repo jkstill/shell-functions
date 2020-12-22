@@ -14,6 +14,48 @@ is_a_number () {
 	return 0
 }
 
+: << 'COMMENT'
+ There is very little difference in speed between bitand and xor
+
+ It probably makes no difference which one is used.
+
+ See speed-test-odd-even.sh
+COMMENT
+
+# generally this is called via odd_or_even
+# as input validation is done there, not repeating it here
+odd_or_even_xor () {
+	local testInt=$1
+
+   # N xor N-1
+	# if 1 then the number is odd
+	#(( tmpInt=testInt^(testInt-1) ))
+
+	#if [[ "$tmpInt" -eq 1 ]]; then
+	if [[ $((testInt^(testInt-1) )) -eq 1 ]]; then
+		echo 'odd'
+	else
+		echo 'even'
+	fi
+
+	return 0
+}
+
+
+# generally this is called via odd_or_even
+# as input validation is done there, not repeating it here
+odd_or_even_bitand () {
+	local testInt=$1
+
+	# in Bash we can use bitwise and
+	if [[ $(( 1 & testInt )) -eq 1 ]] ; then
+		echo 'odd'
+	else
+		echo 'even'
+	fi
+
+	return 0
+}
 
 odd_or_even () {
 	local testInt=$1
@@ -28,29 +70,24 @@ odd_or_even () {
 		return 1
 	fi
 
-	declare tmpInt
+	odd_or_even_bitand $testInt
+	return $?
+}
 
-	# here is one way to do it
-: << 'COMMENT'
+modulo_compute () {
+	local dividend=$1
+	local divisor=$2
+	echo $(( dividend - ((dividend/divisor)*divisor) ))
+	return $?
+}
 
-	(( tmpInt=testInt^(testInt-1) ))
-
-	if [[ "$tmpInt" -eq 1 ]]; then
-		echo 'odd'
-	else
-		echo 'even'
-	fi
-
-COMMENT
-
-	# in Bash we can use bitwise and
-	if [[ $(( 1 & testInt )) -eq 1 ]] ; then
-		echo 'odd'
-	else
-		echo 'even'
-	fi
-
-	return 0
+# about 5% faster than modulo_compute
+# see speed-test-module.sh
+modulo_remainder_op () {
+	local dividend=$1
+	local divisor=$2
+	echo $(($dividend%$divisor))
+	return $?
 }
 
 modulo () {
@@ -79,7 +116,9 @@ modulo () {
 	#(( moduloVal = dividend - ((dividend/divisor)*divisor) ))
 
 	# or just use remainder operator
-	(( moduloVal = dividend%divisor ))
+
+	#moduloVal=$(modulo_compute $dividend $divisor)
+	moduloVal=$(modulo_remainder_op $dividend $divisor)
 
 	echo $moduloVal
 	return 0
