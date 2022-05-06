@@ -186,7 +186,7 @@ do
 	hardpath $p $v
 done
 
-# get full pathname  to script
+# get full pathname  to scrip
 # resolve symlinks
 
 function getScriptPath {
@@ -383,9 +383,11 @@ function chkForEmptyArgs {
 # validate_args ':SCOTT:ORCL:MYTABLE' 
 # RETVAL=$?
 
+
+
 function validate_args {
 	typeset arglist
-	arglist=$1
+	arglist="$1"
 	
 	while shift
 	do
@@ -396,9 +398,28 @@ function validate_args {
 		# [ -z "$1" ] && echo $1 | hexdump -C
 		# 00000000  0a   |.|
 		[ -z "$1" ] && break
-		if [ $(echo $arglist | $GREP -E $1 ) ]; then
+		# grep does not work well with some regexes - I do not know why
+
+		# was grep -E. changed to -P as some regexes did not work with -E 
+		if [ $(echo "$arglist" | $GREP -P "$1" ) ]; then
 			return 0
+		else 
+			echo "NO MATCH"
+			echo "arglist: $arglist"
+			echo "  REGEX: $1"
 		fi
+
+		# tried a bash regex when grep -E did not work for some regular expressions
+		# this also failed for some reason
+		#echo "arglist: $arglist"
+		#echo "  REGEX: $1"
+		#if [[ "$arglist" =~ $1 ]]; then
+			#echo "MATCHED"
+		#else
+			#echo "NO MATCH"
+		#fi
+
+		[[ $arglist =~ $1 ]] && { return 0; }
 		
 	done
 	return 1
