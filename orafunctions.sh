@@ -438,7 +438,9 @@ function timestamp_nano {
 
 function scriptLock  {
 	typeset MY_LOCKFILE
-	MY_LOCKFILE=$1
+	MY_LOCKFILE="$1" 
+
+	#' quote for vim highlighter bug
 
 	# remove stale lockfile
 	[ -r "$MY_LOCKFILE" ] && {
@@ -451,7 +453,7 @@ function scriptLock  {
 
 	# set lock
 	if (set -o noclobber; echo "$$" > "$MY_LOCKFILE") 2> /dev/null; then
-		trap '$_RM -f "$MY_LOCKFILE"; exit $?' INT TERM EXIT
+		trap "$_RM -f '$MY_LOCKFILE'; exit $?" INT TERM EXIT
 		return 0
 	else
 		echo "Failed to acquire $LOCKFILE. Held by $($_CAT $LOCKFILE)"

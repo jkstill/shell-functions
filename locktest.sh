@@ -5,6 +5,8 @@ export FUNCTIONS_FILE=$HOME/scripts/orafunctions.sh
 
 LOCKFILE=/tmp/locktest.lock
 
+echo my PID: $$
+
 scriptLock $LOCKFILE
 
 sleep 10
